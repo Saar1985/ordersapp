@@ -11,6 +11,7 @@
   <modules>
     <module>RestVerticle</module>
     <module>OrderVerticle</module>
+    <module>Common</module>
   </modules>
 
   <properties>
@@ -29,6 +30,13 @@
 
     <launcher.class>io.vertx.core.Launcher</launcher.class>
   </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+  </distributionManagement>
 
   <dependencyManagement>
     <dependencies>

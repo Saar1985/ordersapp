@@ -1,0 +1,9 @@
+<hazelcast>
+  <network>
+    <join>
+      <tcp-ip enabled="true">
+        <member>host.docker.internal</member>
+      </tcp-ip>
+    </join>
+  </network>
+</hazelcast>

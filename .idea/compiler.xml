@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="RestVerticle" />
         <module name="OrderVerticle" />
+        <module name="Common" />
       </profile>
     </annotationProcessing>
   </component>

@@ -1,0 +1,30 @@
+version: '2.8'
+
+services:
+  rest-verticle:
+    image: rest-verticle:latest
+    container_name: rest-verticle
+    ports:
+      - "8888:8888"
+    networks:
+      - verticle-network
+    environment:
+      - VERTICLE_NAME=com.orders.RestVerticle
+      - VERTICLE_FILE=com.orders.RestVerticle
+      - VERTICLE_OPTIONS=-cluster -cluster-host host.docker.internal
+
+  order-verticle:
+    image: order-verticle:latest
+    container_name: order-verticle
+    ports:
+      - "8889:8889"
+    networks:
+      - verticle-network
+    environment:
+      - VERTICLE_NAME=com.orders.OrderVerticle
+      - VERTICLE_FILE=com.orders.OrderVerticle
+      - VERTICLE_OPTIONS=-cluster -cluster-host host.docker.internal
+
+networks:
+  verticle-network:
+    driver: bridge

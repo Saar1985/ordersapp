@@ -17,6 +17,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.orders</groupId>
+      <artifactId>Common</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
@@ -73,40 +81,36 @@
         <artifactId>docker-maven-plugin</artifactId>
         <!-- Use the version that matches your project requirements -->
         <version>0.43.4</version>
+        <executions>
+          <execution>
+            <id>create-docker-image-rest</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+              <goal>save</goal>
+            </goals>
+            <configuration>
+              <!--  Make sure to expose tcp on port 2375 on local machine daemon if that is where it runs, also run this command
+                  netsh interface portproxy add v4tov4 listenport=3375 listenaddress=0.0.0.0 connectaddress=127.0.0.1 connectport=2375-->
+              <dockerHost>tcp://localhost:2375</dockerHost>
+              <verbose>true</verbose>
+              <images>
+                <image>
+                  <name>rest-verticle</name>
+                  <alias>rest-verticle-docker</alias>
+                  <build>
+                    <contextDir>${project.basedir}</contextDir>
+                    <dockerFile>Dockerfile</dockerFile>
+                    <tags>
+                      <tag>latest</tag>
+                    </tags>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+        </executions>
 
-        <!-- Configuration for Docker plugin -->
-        <configuration>
-          <images>
-            <image>
-              <!-- plugin-specific syntax for iris-app/${project.artifactId}:${project.version} -->
-              <name>rest-verticle</name>
-              <build>
-                <dockerFileDir>${project.basedir}</dockerFileDir>
-                <dockerFile>Dockerfile</dockerFile>
-                <tags>
-                  <tag>latest</tag>
-                </tags>
-              </build>
-              <run>
-                <network>
-                  <alias>verticle-network</alias>
-                </network>
-                <ports>
-                  <port>8889:8889</port>
-                </ports>
-                <env>
-                  <VERTICLE_NAME>com.orders.RestVerticle</VERTICLE_NAME>
-                  <VERTICLE_FILE>com.example.RestVerticle</VERTICLE_FILE>
-                  <VERTICLE_OPTIONS>-cluster -cluster-host host.docker.internal</VERTICLE_OPTIONS>
-                </env>
-                <wait>
-                  <log>RestVerticle started</log>
-                  <time>5000</time>
-                </wait>
-              </run>
-            </image>
-          </images>
-        </configuration>
       </plugin>
     </plugins>
   </build>

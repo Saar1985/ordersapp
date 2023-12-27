@@ -68,6 +68,46 @@
           </arguments>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <!-- Use the version that matches your project requirements -->
+        <version>0.43.4</version>
+
+        <!-- Configuration for Docker plugin -->
+        <configuration>
+          <images>
+            <image>
+              <!-- plugin-specific syntax for iris-app/${project.artifactId}:${project.version} -->
+              <name>rest-verticle</name>
+              <build>
+                <dockerFileDir>${project.basedir}</dockerFileDir>
+                <dockerFile>Dockerfile</dockerFile>
+                <tags>
+                  <tag>latest</tag>
+                </tags>
+              </build>
+              <run>
+                <network>
+                  <alias>verticle-network</alias>
+                </network>
+                <ports>
+                  <port>8889:8889</port>
+                </ports>
+                <env>
+                  <VERTICLE_NAME>com.orders.RestVerticle</VERTICLE_NAME>
+                  <VERTICLE_FILE>com.example.RestVerticle</VERTICLE_FILE>
+                  <VERTICLE_OPTIONS>-cluster -cluster-host host.docker.internal</VERTICLE_OPTIONS>
+                </env>
+                <wait>
+                  <log>RestVerticle started</log>
+                  <time>5000</time>
+                </wait>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 

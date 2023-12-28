@@ -1,6 +1,7 @@
 package com.orders;
 
 import com.hazelcast.config.Config;
+import com.orders.managers.OrderManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -12,6 +13,8 @@ import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import com.orders.utilities.ClusterConfigUtil;
 
 public class OrderVerticle extends AbstractVerticle {
+
+  private OrderManager orderManager;
   public static void main(String[] args) {
     VertxOptions options = new VertxOptions();
     Config hazelcastConfig = new Config();
@@ -33,24 +36,18 @@ public class OrderVerticle extends AbstractVerticle {
   @Override
   public void start() {
     EventBus eventBus = vertx.eventBus();
+    orderManager = new OrderManager(vertx.fileSystem());
 
-    // Event bus consumer for handling incoming orders
     eventBus.consumer("addOrder", message -> {
-      // Process the order
       JsonObject order = (JsonObject) message.body();
-      // Save the order details (e.g., in-memory or file-based storage)
-      System.out.println("Received Order: " + order);
-      // Acknowledge the successful processing of the order
-      message.reply("Order processed successfully");
+      orderManager.addOrder(order);
+      message.reply("Order added successfully");
     });
 
-    // Event bus consumer for handling get orders request
     eventBus.consumer("getOrders", message -> {
-      // Retrieve and send orders (e.g., from in-memory or file-based storage)
-      // For simplicity, let's assume orders are stored as a JSON array
-      JsonObject orders = new JsonObject();
-      orders.put("orders", new JsonArray());
-      message.reply(orders);
+      String username = (String) message.body();
+      JsonArray userOrders = orderManager.getOrdersForUser(username);
+      message.reply(userOrders);
     });
   }
 }

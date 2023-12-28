@@ -5,7 +5,8 @@ services:
     image: rest-verticle:latest
     container_name: rest-verticle
     ports:
-      - "8888:8888"
+      - "8080:8080"
+      - "5005:5005"
     networks:
       - verticle-network
     environment:
@@ -17,7 +18,8 @@ services:
     image: order-verticle:latest
     container_name: order-verticle
     ports:
-      - "8889:8889"
+      - "8888:8888"
+      - "5006:5006"
     networks:
       - verticle-network
     environment:

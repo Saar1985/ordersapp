@@ -2,13 +2,15 @@
 
 image:https://img.shields.io/badge/vert.x-4.5.1-purple.svg[link="https://vertx.io"]
 
-This application was generated using http://start.vertx.io
+App by Saar Ox
 
 == Requirements
 
 [.yellow]*- Docker installed and running on your machine*
 ```
-Docker installed and running on your machine
+* Docker installed and running on your machine
+* Docker settings->general option "expose daemon on port 2375 over TLS" should be enabled
+* If you still have host name error while packaging run this command in cmd: netsh interface portproxy add v4tov4 listenport=3375 listenaddress=0.0.0.0 connectaddress=127.0.0.1 connectport=2375
 ```
 
 == Local deploy instructions

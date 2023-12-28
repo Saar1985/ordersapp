@@ -1,10 +1,18 @@
 package com.orders.managers;
 
+import com.orders.pojos.Order;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.AsyncFile;
 import io.vertx.core.file.FileSystem;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.json.JsonArray;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class OrderManager {
 
@@ -17,30 +25,53 @@ public class OrderManager {
     validateFileExists();
   }
 
-  public void addOrder(JsonObject order) {
+  public void addOrder(JsonObject ordersJson) {
 
-    JsonObject ordersJson = fileSystem.readFileBlocking(ORDERS_FILE_PATH).toJsonObject();
+    try {
+      Order order = ordersJson.mapTo(Order.class);
 
-    JsonArray orders = ordersJson.getJsonArray("orders", new JsonArray());
-    orders.add(order);
-
-    fileSystem.writeFileBlocking(ORDERS_FILE_PATH, ordersJson.put("orders", orders).toBuffer());
+      fileSystem.open(ORDERS_FILE_PATH, new OpenOptions().setAppend(true), ar -> {
+        if (ar.succeeded()) {
+          AsyncFile ws = ar.result();
+          ws.write(Buffer.buffer(order.toString()));
+        } else {
+          logger.error("Could not open file: " + ORDERS_FILE_PATH);
+        }
+      });
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(e.getMessage());
+    }
   }
 
   public JsonArray getOrdersForUser(String username) {
 
-    JsonObject ordersJson = fileSystem.readFileBlocking(ORDERS_FILE_PATH).toJsonObject();
-    JsonArray allOrders = ordersJson.getJsonArray("orders", new JsonArray());
+    try {
+      String content = fileSystem.readFileBlocking(ORDERS_FILE_PATH).toString();
+      List<String> linesList = content.lines().toList();
+      JsonArray jsonArray = new JsonArray();
 
-    JsonArray userOrders = new JsonArray();
-    for (Object orderObj : allOrders) {
-      JsonObject order = (JsonObject) orderObj;
-      if (order.getString("username").equals(username)) {
-        userOrders.add(order);
+      for (String line : linesList) {
+        if(line.endsWith("," + username))
+        {
+          String csvLine = line.trim();
+          String[] fields = csvLine.split(",");
+          Order order = new Order();
+          order.setOrderId(fields[0]);
+          order.setOrderName(fields[1]);
+          order.setOrderDate(fields[2]);
+          order.setUsername(fields[3]);
+          jsonArray.add(JsonObject.mapFrom(order));
+        }
       }
-    }
 
-    return userOrders;
+      return jsonArray;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(e.getMessage());
+      return new JsonArray();
+    }
   }
 
   public void validateFileExists()
@@ -54,7 +85,6 @@ public class OrderManager {
           logger.info("Failure in creating file: " + ORDERS_FILE_PATH);
         }
       });
-      fileSystem.writeFileBlocking(ORDERS_FILE_PATH, new JsonObject().put("orders", new JsonArray()).toBuffer());
     }
   }
 }

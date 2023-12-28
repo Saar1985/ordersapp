@@ -131,6 +131,6 @@ public class RestVerticle extends AbstractVerticle {
       }
     });
 
-    server.requestHandler(router).listen(8080);
+    server.requestHandler(router).listen(7777);
   }
 }

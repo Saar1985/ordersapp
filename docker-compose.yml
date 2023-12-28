@@ -5,7 +5,7 @@ services:
     image: rest-verticle:latest
     container_name: rest-verticle
     ports:
-      - "8080:8080"
+      - "7777:7777"
       - "5005:5005"
     networks:
       - verticle-network

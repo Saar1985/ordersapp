@@ -1,0 +1,157 @@
+{
+	"info": {
+		"_postman_id": "c5df61ca-a61a-48a7-99b2-6a205913b648",
+		"name": "Vertx HomeWork",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "715786"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseBody = JSON.parse(responseBody);\r",
+							"\r",
+							"// Extract the sessionId value\r",
+							"var sessionId = responseBody.sessionId;\r",
+							"\r",
+							"// Set the global variable\r",
+							"pm.globals.set(\"sessionId\", sessionId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"host": true,
+					"user-agent": true
+				},
+				"strictSSL": false,
+				"disableUrlEncoding": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Admin\",\r\n    \"password\": \"Admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7777/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7777",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "SessionId",
+						"value": " {{sessionId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7777/getOrders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7777",
+					"path": [
+						"getOrders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddOrder",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SessionId",
+						"value": " {{sessionId}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\":\"1\",\r\n    \"orderName\":\"MyOrder1\",\r\n    \"orderDate\":\"12.12.2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7777/addOrder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7777",
+					"path": [
+						"addOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "SessionId",
+						"value": " {{sessionId}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:7777/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7777",
+					"path": [
+						"logout"
+					],
+					"query": [
+						{
+							"key": "SessionId",
+							"value": "4d044dc6-1377-4ab0-9721-79bfcbc09709",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -4,29 +4,41 @@ image:https://img.shields.io/badge/vert.x-4.5.1-purple.svg[link="https://vertx.i
 
 This application was generated using http://start.vertx.io
 
-== Building
+== Requirements
 
-To launch your tests:
+[.yellow]*- Docker installed and running on your machine*
 ```
-./mvnw clean test
-```
-
-To package your application:
-```
-./mvnw clean package
+Docker installed and running on your machine
 ```
 
-To run your application:
+== Local deploy instructions
+*To package your application.*
+[.red]*Note: this will also create docker images both in project location and in running docker instance. no need to write load image commands.*
 ```
-./mvnw clean compile exec:java
+mvn clean package
 ```
 
-== Help
+*To run your application:*
+```
+docker-compose up -d
+```
 
-* https://vertx.io/docs/[Vert.x Documentation]
-* https://stackoverflow.com/questions/tagged/vert.x?sort=newest&pageSize=15[Vert.x Stack Overflow]
-* https://groups.google.com/forum/?fromgroups#!forum/vertx[Vert.x User Group]
-* https://discord.gg/6ry7aqPWXy[Vert.x Discord]
-* https://gitter.im/eclipse-vertx/vertx-users[Vert.x Gitter]
+== How to test
+
+* RestVerticle exposes port 7777 for REST Requests and 5005 for JVM Debug (Debug enabled by default).
+* OrderVerticle exposes port 8888 for REST Requests and 5006 for JVM Debug (Debug enabled by default).
+* For ease of use I commited postman collection in main module directory.
+* On Login user gets SessionId, he must pass this session in any other rest request in header.
+* Add order request json format example:
+```
+{
+    "orderId":"1",
+    "orderName":"MyOrder1",
+    "orderDate":"12.12.2023"
+}
+```
+* Hazelcast cluster configuration is in Common/src/main/resources/hazelcast_config.xml
+* Default allowed users are in  RestVerticle/src/main/resources/default_permissions.csv
+
 
 
